@@ -26,7 +26,7 @@ pipeline {
 	   
 	   stage ("Running Terraform for Cloud Provisioning") {
 	      when {
-                expression { params.ACTION == 'true' }
+                expression { params.ACTION == 'false' }
                }
               steps {
 	         sh  " sh ${script} ${provider}"
@@ -35,5 +35,33 @@ pipeline {
 
            
     }
+	 stage('Build Docker Image') {
+            when {
+                expression { params.ACTION == 'true'}
+            }
+            steps {
+                script {
+                    app = docker.build(DOCKER_IMAGE_NAME)
+		    
+                }
+            }
+        }
+          stage('Push Docker Image') {
+            when {
+                 expression { params.ACTION == 'true' }
+            }
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') 
+			{
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+			sh "sleep 60"
+                        }
+                     }
+                 }
+           }
 }
 	    
+
+
