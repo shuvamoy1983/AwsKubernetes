@@ -35,7 +35,7 @@ pipeline {
 
            
     }
-	 stage('Build Docker Image') {
+    stage('Build Docker Image') {
             when {
                 expression { params.ACTION == 'true'}
             }
@@ -46,7 +46,7 @@ pipeline {
                 }
             }
         }
-          stage('Push Docker Image') {
+     stage('Push Docker Image') {
             when {
                  expression { params.ACTION == 'true' }
             }
@@ -60,7 +60,7 @@ pipeline {
                         }
                      }
                  }
-           }
+         }
 }
 	    
 
